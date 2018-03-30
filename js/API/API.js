@@ -3687,7 +3687,7 @@ function pressButton(button) {
 
 }
 
-var trusted = is_owner;
+var trusted = true; 
 function runAction(code, errHeader, button) {
 	try {
 		var msg = 'This insight is requesting permission to execute custom code. For security reasons, you should only run custom code in trusted insights.\n\nAre you sure you want to run code in this insight?';

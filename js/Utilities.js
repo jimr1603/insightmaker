@@ -274,8 +274,9 @@ function isValued(cell) {
 
 function setSaveEnabled(e) {
 	if (is_editor && (!is_embed)) {
+
 		var b = ribbonPanelItems().getComponent('savebut');
-		if (e && unfoldingManager.unfolding == false) {
+		if (e  == false) {
 			b.setDisabled(false);
 			b.setText('Save');
 		} else {

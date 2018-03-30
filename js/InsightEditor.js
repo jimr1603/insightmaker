@@ -551,6 +551,14 @@ function main() {
 	ribbonPanel = Ext.create('Ext.Panel', RibbonPanel(graph, mainPanel, configPanel));
 
 	window.toNum = 0;
+	var viewport = new Ext.Viewport({
+		layout: 'border',
+		padding: (viewConfig.showTopLinks ? '22 0 0 0' : 0),
+		id: 'overall-viewport',
+		items: [ribbonPanel
+		]
+	});
+
   $(mxPanel.getEl().dom)
     .on('touchstart tap  ', function(e) { /*touch move touchend*/
 		e.stopPropagation();
@@ -778,6 +786,18 @@ function main() {
 
 
 	loadBackgroundColor();
+
+	if (viewConfig.saveEnabled) {
+		var mgr = new mxAutoSaveManager(graph);
+		mgr.autoSaveThreshold = 0;
+		mgr.autoSaveDelay = 0;
+		mgr.autoSaveThrottle = 0;
+		mgr.save = function() {
+			if (graph_title != "") {
+				saveModel();
+			}
+		};
+	}
 
 	var listener = function(sender, evt) {
 		undoHistory.undoableEditHappened(evt.getProperty('edit'));
@@ -1183,15 +1203,7 @@ function main() {
 		scratchpadFn();
 	});
 
-	keyHandler.bindControlKey(191, function() { // ]
-		if (!Ext.getCmp("unfoldToolbar").isHidden()) {
-			if (!Ext.getCmp("nextUnfoldBut").isHidden) {
-				if (!Ext.getCmp("nextUnfoldBut").isDisabled()) {
-					doUnfoldStep();
-				}
-			}
-		}
-	});
+	
 
 	if (viewConfig.allowEdits) {
 
@@ -2008,7 +2020,6 @@ function main() {
 
 	handelCursors();
 
-	handleUnfoldToolbar();
 
 	if (is_embed && (is_zoom == 1)) {
 		graph.getView().setScale(0.25);
