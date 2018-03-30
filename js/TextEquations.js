@@ -145,15 +145,7 @@ function textEquations(){
 					hideLabel: true,
 					value: getGraphXml(graph).replace(/mxGraphModel/g,"InsightMakerModel"),
 					width:"100%"
-				},
-				{
-					text: getText("Download"),
-					xtype: "button",
-					margin: 3,
-					handler: function(){
-						new mxXmlRequest(builder_path + "/download.php", $.param({name: "Model", format: "InsightMaker", "data": getGraphXml(graph).replace(/mxGraphModel/g,"InsightMakerModel")})).simulate(document, "_blank");
-					}
-				}
+				} 
 				]
 			}]
 		});

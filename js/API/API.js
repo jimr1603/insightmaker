@@ -894,13 +894,9 @@ dialogue - Pass true to show the properties dialogues (e.g. name, description, t
 
 
 function saveModel(dialogue) {
-	if (dialogue || graph_title == "") {
-		updateProperties();
-	} else {
-		if(!unfoldingManager.unfolding){
-			sendGraphtoServer(graph);
-		}
-	}
+	var a = getGraphXml(graph);
+	var b = new Blob([a],{type:"text/XML"});
+	saveAs(b,"file.InsightMaker","text/XML");
 }
 
 

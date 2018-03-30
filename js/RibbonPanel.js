@@ -1443,49 +1443,7 @@ var RibbonPanel = function(graph, mainPanel, configPanel) {
 					hidden: (!viewConfig.styleGroup),
 					text: getText('Share'),
 					itemId: 'share',
-					menu: [{
-							hidden: (!is_editor) || is_ebook,
-							text: getText('Storytelling') + "...",
-							glyph: 0xf0e6,
-							tooltip: getText('Display the model step-by-step to tell a story'),
-							handler: blockUnfold(showUnfoldingWin),
-							scope: this
-						},
-						{
-							hidden: (!is_editor) || is_ebook,
-							text: getText('Publish Article') + "...",
-							glyph: 0xf0f6,
-							tooltip: getText('Create a crisp, static webpage of describing your model'),
-							handler: blockUnfold(articleWindow),
-							scope: this
-						},
-						 '-', {
-							itemId: 'embed_but',
-							text: getText('Embed in Webpage') + "...",
-							hidden: (!is_editor) || is_ebook,
-							glyph: 0xf0ac,
-							tooltip: getText('Embed this Insight in another web page'),
-							handler: function() {
-								if (drupal_node_ID == -1) {
-									Ext.MessageBox.show({
-										title: getText('Save the Insight'),
-										msg: getText('You must save this Insight before you can embed it.'),
-										buttons: Ext.MessageBox.OK,
-										icon: Ext.MessageBox.ERROR
-									});
-								} else {
-
-									Ext.MessageBox.show({
-										title: getText('Embed'),
-										msg: getText('To embed this Insight in another webpage (such as a blog or a private site), copy and paste the following code into the source HTML code of your webpage: %s', '<br/><br/><center><tt>&lt;IFRAME SRC="//InsightMaker.com/insight/' + drupal_node_ID + '/embed?topBar=1&sideBar=1&zoom=1" TITLE="Embedded Insight" width=600 height=420&gt;&lt;/IFRAME&gt;</tt></center><br/>'),
-										buttons: Ext.MessageBox.OK,
-										icon: Ext.MessageBox.INFO
-									});
-								}
-							},
-							scope: this
-						},
-						'-', {
+					menu: [ {
 							hidden: (!is_editor),
 							text: "Import",
 							glyph: 0xf093,
@@ -1514,10 +1472,10 @@ var RibbonPanel = function(graph, mainPanel, configPanel) {
 							glyph: 0xf019,
 							menu: [{
 									text: getText("Download Insight Maker File"),
-									handler: function(){
-										/*downloadFile("Model.InsightMaker", getGraphXml(graph).replace(/mxGraphModel/g,"InsightMakerModel"));*/
-										new mxXmlRequest(builder_path + "/download.php", $.param({name: "Model", format: "InsightMaker", "data": getGraphXml(graph).replace(/mxGraphModel/g,"InsightMakerModel")})).simulate(document, "_blank");
+									handler: function() {
+										saveModel();
 									}
+									
 								},'-',
 								{
 									/*hidden: (!is_editor),*/

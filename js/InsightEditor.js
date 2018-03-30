@@ -551,85 +551,6 @@ function main() {
 	ribbonPanel = Ext.create('Ext.Panel', RibbonPanel(graph, mainPanel, configPanel));
 
 	window.toNum = 0;
-	var viewport = new Ext.Viewport({
-		layout: 'border',
-		padding: (viewConfig.showTopLinks ? '22 0 0 0' : 0),
-		id: 'overall-viewport',
-		items: [ribbonPanel, {
-			xtype: 'toolbar',
-			region: 'south',
-			dock: 'bottom',
-			hidden: false,
-			id: 'unfoldToolbar',
-			layout: {
-				align: "bottom"
-			},
-			items: [{
-				glyph: 0xf0e6,
-				text: getText('View Story'),
-				iconCls: 'blue-icon',
-				scope: this,
-				id: 'unfoldUnfoldBut',
-				handler: function() {
-
-					revealUnfoldButtons(true);
-					beginUnfolding();
-				}
-			},{
-				glyph: 0xf044,
-				text: getText('Edit Story'),
-				scope: this,
-				id: 'editUnfoldBut',
-				handler: showUnfoldingWin
-			}, {
-				scale: "large",
-				iconAlign: 'top',
-				glyph: 0xf021,
-				text: getText('Start Over'),
-				scope: this,
-				id: 'reloadUnfoldBut',
-				handler: function() {
-					restartUnfolding();
-				}
-			}, {
-				hidden: is_ebook,
-				scale: "large",
-				iconAlign: 'top',
-				glyph: 0xf05c,
-				iconCls: 'red-icon',
-				text: getText('Exit Story'),
-				scope: this,
-				id: 'exitUnfoldBut',
-				handler: function() {
-					revealUnfoldButtons(false);
-					finishUnfolding();
-				}
-			}, {
-				html: "",
-				id: 'messageUnfoldBut',
-				flex: 1,
-				xtype: "box",
-				style: {
-					"font-size": "larger"
-				},
-				margin: '4 10 4 10',
-				align: "middle",
-				minHeight: 64
-			}, {
-				scale: "large",
-				iconCls: 'green-icon',
-				iconAlign: 'top',
-				glyph: 0xf138,
-				text: getText('Step Forward'),
-				scope: this,
-				id: 'nextUnfoldBut',
-				handler: function() {
-					doUnfoldStep()
-				}
-			}]
-		}]
-	});
-
   $(mxPanel.getEl().dom)
     .on('touchstart tap  ', function(e) { /*touch move touchend*/
 		e.stopPropagation();
@@ -857,18 +778,6 @@ function main() {
 
 
 	loadBackgroundColor();
-
-	if (viewConfig.saveEnabled) {
-		var mgr = new mxAutoSaveManager(graph);
-		mgr.autoSaveThreshold = 0;
-		mgr.autoSaveDelay = 0;
-		mgr.autoSaveThrottle = 0;
-		mgr.save = function() {
-			if (graph_title != "") {
-				saveModel();
-			}
-		};
-	}
 
 	var listener = function(sender, evt) {
 		undoHistory.undoableEditHappened(evt.getProperty('edit'));

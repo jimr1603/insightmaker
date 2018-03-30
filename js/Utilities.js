@@ -4,8 +4,8 @@
 Copyright 2010-2018 Scott Fortmann-Roe. All rights reserved.
 
 This file may distributed and/or modified under the
-terms of the Insight Maker Public License (https://InsightMaker.com/impl).
 
+terms of the Insight Maker Public License (https://InsightMaker.com/impl).
 */
 
 var analysisCount = 0;
@@ -17,68 +17,6 @@ function getGraphXml(graph) {
 	return mxUtils.getPrettyXml(node);
 }
 
-var isSendingtoServer = false;
-var waitingToSendToServer = false;
-var waitingToSendTimeout = -1;
-function sendGraphtoServer(graph) {
-	if(isSendingtoServer){
-		waitingToSendToServer = true;
-	}else{
-		if(!unfoldingManager.unfolding){
-			clearTimeout(waitingToSendTimeout);
-			waitingToSendToServer = false;
-			isSendingtoServer = true;
-
-			Ext.Ajax.request({
-				url: builder_path + '/save.php',
-				method: 'POST',
-				params: {
-					data: getGraphXml(graph),
-					nid: drupal_node_ID,
-					title: graph_title,
-					description: graph_description,
-					tags: graph_tags,
-					has_article: has_article,
-					published: published,
-					groups: JSON.stringify(node_groups)
-				},
-
-				success: function(result, request) {
-					if (parseInt(result.responseText) != result.responseText) {
-						console.log("Insight Save Issue:\n\n" + result.responseText);
-					} else {
-						drupal_node_ID = result.responseText;
-						setSaveEnabled(waitingToSendToServer);
-						updateWindowTitle();
-						setTopLinks();
-
-					}
-				},
-				failure: function(result, request) {
-					console.log("Insight Not Saved:\n\n" + result.responseText);
-					/*Ext.MessageBox.hide();
-		            Ext.MessageBox.show({
-		                title: 'Error',
-		                msg: 'The Insight could not be saved. Please try again later.',
-		                buttons: Ext.MessageBox.OK,
-		                animEl: 'mb9',
-		                icon: Ext.MessageBox.ERROR
-		            });*/
-				},
-				callback: function(){
-					isSendingtoServer = false;
-
-					if(waitingToSendToServer){
-						waitingToSendTimeout = setTimeout(function(){
-							sendGraphtoServer(graph);
-						}, 5*1000); // Wait 5 seconds
-					}
-				}
-			});
-		}
-	}
-
-}
 
 function validPrimitiveName(name, primitive) {
 	if (primitive.value.nodeName == "Stock" || primitive.value.nodeName == "Variable" || primitive.value.nodeName == "Converter" || primitive.value.nodeName == "Flow" || primitive.value.nodeName == "Display" || primitive.value.nodeName == "Agents" || primitive.value.nodeName == "Transition" || primitive.value.nodeName == "State") {
@@ -1206,52 +1144,7 @@ function flatten(arr) {
 	return recFlatten(arr);
 }
 
-var downloadButton = function(name){
-	return {
-					xtype: 'button',
-					text: 'Download',
-					glyph: 0xf0ed,
-					handler: function(){
-						var grid = this.up("gridpanel");
-						var store = grid.getStore();
-						var columns = grid.columns;//store.fields ? store.fields.items : store.model.prototype.fields.items;
 
-						var res = "";
-
-						res += columns.filter(function(x){
-							return !x.hidden;
-						}).map(function(x){
-								return '"' + (x.text || x.name).replace(/"/g, '""') + '"';
-							}).join(",");
-
-				        store.each(function(record, index) {
-					        var cells = [];
-					        columns.forEach(function(col) {
-					            var name = col.name || col.dataIndex;
-					            if(name) {
-					                //if (Ext.isFunction(col.renderer)) {
-					                 // var value = col.renderer(record.get(name), null, record);
-					                //} else {
-					                  var value = ""+record.get(name);
-					                //}
-					                cells.push('"'+value.replace(/"/g, '""')+'"');
-					            }
-					        });
-
-
-				          res += "\r\n" + cells.join(",");
-				        });
-
-						/*downloadFile(name, res);*/
-
-						new mxXmlRequest(builder_path + "/download.php", $.param({
-							name: name,
-							"format": "csv",
-							"data": res
-						})).simulate(document, "_blank");
-					}
-				};
-			}
 
 
 			function deepClone(target, obj, depth, fn){
@@ -1342,9 +1235,6 @@ var downloadButton = function(name){
 
 				var xml = (mxUtils.getXml(root));
 
-				new mxXmlRequest(builder_path + "/download.php", $.param({
-					name: "Insight Maker Diagram",
-					"format": "svg",
-					"data": xml
-				})).simulate(document, "_blank");
-			};
+				var b = new Blob([xml],{type:"image/svg+xml"});
+				saveAs(b, "model.svg", "image/svg+xml");
+            };
